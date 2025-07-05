@@ -22,7 +22,9 @@ export default class AuthController {
                 password: data.password
             })
 
-            const token = await User.accessTokens.create(user)
+            const token = await User.accessTokens.create(user, ['*'], {
+                expiresIn: '1 day'
+            })
 
             return response.status(201).json({
                 message: "Registered successfully",
@@ -60,7 +62,9 @@ export default class AuthController {
 
             const user = await User.verifyCredentials(data.email, data.password)
 
-            const token = await User.accessTokens.create(user)
+            const token = await User.accessTokens.create(user, ['*'], {
+                expiresIn: '1 day'
+            })
 
             return response.status(200).json({
                 message: "Successful login",
