@@ -32,3 +32,13 @@ router
     router.post('/join/player2', [FindGamesController, 'joinGame']).middleware(middleware.auth())
   })
   .prefix('/api')
+
+router
+  .group(() => {
+    router.get('/profile', '#controllers/profiles_controller.show')
+    router.put('/profile', '#controllers/profiles_controller.update')
+    router.delete('/profile', '#controllers/profiles_controller.destroy')
+    router.get('/profile/stats', '#controllers/profiles_controller.getStats')
+  })
+  .prefix('/api')
+  .middleware(middleware.auth())

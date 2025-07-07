@@ -1,9 +1,12 @@
 import { DateTime } from 'luxon'
 import hash from '@adonisjs/core/services/hash'
 import { compose } from '@adonisjs/core/helpers'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
+import type { HasMany } from '@adonisjs/lucid/types/relations'
+import Room from './room.js'
+import Turn from './turn.js'
 
 const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
@@ -30,4 +33,20 @@ export default class User extends compose(BaseModel, AuthFinder) {
   declare updatedAt: DateTime | null
 
   static accessTokens = DbAccessTokensProvider.forModel(User)
+
+  // Relaciones
+  @hasMany(() => Room, {
+    foreignKey: 'player1Id',
+  })
+  declare roomsAsPlayer1: HasMany<typeof Room>
+
+  @hasMany(() => Room, {
+    foreignKey: 'player2Id',
+  })
+  declare roomsAsPlayer2: HasMany<typeof Room>
+
+  @hasMany(() => Turn, {
+    foreignKey: 'playerId',
+  })
+  declare turns: HasMany<typeof Turn>
 }
